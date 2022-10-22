@@ -16,6 +16,9 @@ export type Scalars = {
 export type AddBookMutationResponse = {
   __typename?: 'AddBookMutationResponse';
   book?: Maybe<Book>;
+  code: Scalars['String'];
+  message: Scalars['String'];
+  success: Scalars['Boolean'];
 };
 
 export type Book = {
@@ -129,6 +132,9 @@ export type ResolversParentTypes = {
 
 export type AddBookMutationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AddBookMutationResponse'] = ResolversParentTypes['AddBookMutationResponse']> = {
   book?: Resolver<Maybe<ResolversTypes['Book']>, ParentType, ContextType>;
+  code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

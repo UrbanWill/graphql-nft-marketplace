@@ -8,6 +8,9 @@ type Query {
 }
 
 type AddBookMutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
   book: Book
 }
 
