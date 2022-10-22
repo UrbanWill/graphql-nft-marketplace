@@ -1,9 +1,5 @@
-// Use our automatically generated Book and AddBookMutationResponse types
-// for type safety in our data source class
 import { AddBookMutationResponse, Book } from "../../generated/graphql";
-
 export default class BooksDataSource {
-  // Our example static data set
   books: { title?: string; author?: string }[] = [
     {
       title: "The Awakening",

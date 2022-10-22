@@ -1,26 +1,23 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import logger from "pino";
 import BooksDataSource from "./datasource/booksdatasource";
 import resolvers from "./resolvers";
-
+import { createApolloLoggerPlugin } from "./logger/createApolloLoggerPlugin";
 import { readFileSync } from "fs";
+import { Context } from "../types";
 
-const appLogger = logger();
+import { createLogger } from "./logger/createLogger";
+import config from "../config";
 
 const typeDefs = readFileSync("./schema.graphql", { encoding: "utf-8" });
+const logger = createLogger();
 
-export interface MyContext {
-  dataSources: {
-    booksAPI: BooksDataSource;
-  };
-}
-
-const server = new ApolloServer<MyContext>({
+const server = new ApolloServer<Context>({
   typeDefs,
   resolvers,
 });
 
+// @ts-ignore
 const { url } = await startStandaloneServer(server, {
   context: async () => {
     return {
@@ -30,8 +27,10 @@ const { url } = await startStandaloneServer(server, {
       dataSources: {
         booksAPI: new BooksDataSource(),
       },
+      logger: logger,
     };
   },
+  plugins: [createApolloLoggerPlugin(logger, config)],
 });
 
 console.log(`🚀  Server ready at: ${url}`);
