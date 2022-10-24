@@ -1,5 +1,5 @@
 import admin from "firebase-admin";
-import { getBooks, addBook } from "./booksdatasource";
+import { getBooks, addBook } from "./nftMarketplaceDataSource";
 import { Config, Logger, FirestoreDatasource } from "../../types";
 
 const createDataSource = (

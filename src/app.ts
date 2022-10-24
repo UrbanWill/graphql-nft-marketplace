@@ -25,7 +25,7 @@ const { url } = await startStandaloneServer(server, {
   context: async () => {
     return {
       dataSources: {
-        booksAPI: datasource,
+        nftMarketplaceAPI: datasource,
       },
       logger: logger,
     };

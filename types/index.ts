@@ -37,7 +37,7 @@ export interface FirestoreDatasource extends ApolloDataSource<Context> {
 
 export interface AppContext {
   dataSources: {
-    booksAPI: FirestoreDatasource;
+    nftMarketplaceAPI: FirestoreDatasource;
   };
   logger: Logger;
 }
