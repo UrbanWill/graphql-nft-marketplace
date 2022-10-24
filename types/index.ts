@@ -1,5 +1,5 @@
 import type { Logger as PinoLogger } from "pino";
-import { Book, AddBookMutationResponse } from "../src/generated/graphql";
+import { Book, AddBookMutationResponse, Nonce } from "../src/generated/graphql";
 import type { DataSource as ApolloDataSource } from "apollo-datasource";
 import { Context } from "apollo-server-core";
 
@@ -24,6 +24,7 @@ export interface Config {
   nftMarketCollection: string;
   nftMarketCollectionSubCollectionX: string;
   booksCollection: string;
+  noncesCollection: string;
 }
 
 export interface Logger extends PinoLogger {
@@ -32,9 +33,9 @@ export interface Logger extends PinoLogger {
 
 export interface FirestoreDatasource extends ApolloDataSource<Context> {
   getBooks: () => Promise<Book[]>;
+  getNonceToSign: (walletAddress: string) => Promise<Nonce>;
   addBook: (Book) => Promise<AddBookMutationResponse>;
 }
-
 export interface AppContext {
   dataSources: {
     nftMarketplaceAPI: FirestoreDatasource;

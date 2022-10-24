@@ -4,8 +4,13 @@ type Book {
   id: ID
 }
 
+type Nonce {
+  nonce: Int!
+}
+
 type Query {
   books: [Book]
+  nonceToSign(walletAddress: String!): Nonce!
 }
 
 type AddBookMutationResponse {

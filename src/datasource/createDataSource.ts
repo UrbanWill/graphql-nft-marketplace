@@ -1,5 +1,5 @@
 import admin from "firebase-admin";
-import { getBooks, addBook } from "./nftMarketplaceDataSource";
+import { getBooks, addBook, getNonceToSign } from "./nftMarketplaceDataSource";
 import { Config, Logger, FirestoreDatasource } from "../../types";
 
 const createDataSource = (
@@ -26,7 +26,7 @@ const createDataSource = (
     projectId: config.projectId,
   });
 
-  return { getBooks, addBook };
+  return { getBooks, addBook, getNonceToSign };
 };
 
 export default createDataSource;
