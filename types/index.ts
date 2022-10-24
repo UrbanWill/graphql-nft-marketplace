@@ -1,5 +1,7 @@
 import type { Logger as PinoLogger } from "pino";
 import { Book, AddBookMutationResponse } from "../src/generated/graphql";
+import type { DataSource as ApolloDataSource } from "apollo-datasource";
+import { Context } from "apollo-server-core";
 
 export type Environment = "dev" | "prod";
 
@@ -7,6 +9,7 @@ export type LogLevel = "debug" | "info" | "warn" | "error" | "trace";
 
 export interface Config {
   name: string;
+  projectId: string;
   logLevel: LogLevel;
   port: string | number;
   environment: Environment;
@@ -15,20 +18,21 @@ export interface Config {
   apiJwtSecret: string;
   nftMarketCollection: string;
   nftMarketCollectionSubCollectionX: string;
+  booksCollection: string;
 }
 
 export interface Logger extends PinoLogger {
   logMemoryUsage: () => void;
 }
 
-export interface IBooksDataSource {
-  getBooks: () => Book[];
-  addBook: (Book) => AddBookMutationResponse;
+export interface FirestoreDatasource extends ApolloDataSource<Context> {
+  getBooks: () => Promise<Book[]>;
+  addBook: (Book) => Promise<AddBookMutationResponse>;
 }
 
-export interface Context {
+export interface AppContext {
   dataSources: {
-    booksAPI: IBooksDataSource;
+    booksAPI: FirestoreDatasource;
   };
   logger: Logger;
 }

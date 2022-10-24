@@ -24,6 +24,7 @@ export type AddBookMutationResponse = {
 export type Book = {
   __typename?: 'Book';
   author?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['ID']>;
   title?: Maybe<Scalars['String']>;
 };
 
@@ -115,6 +116,7 @@ export type ResolversTypes = {
   AddBookMutationResponse: ResolverTypeWrapper<AddBookMutationResponse>;
   Book: ResolverTypeWrapper<Book>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  ID: ResolverTypeWrapper<Scalars['ID']>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
@@ -125,6 +127,7 @@ export type ResolversParentTypes = {
   AddBookMutationResponse: AddBookMutationResponse;
   Book: Book;
   Boolean: Scalars['Boolean'];
+  ID: Scalars['ID'];
   Mutation: {};
   Query: {};
   String: Scalars['String'];
@@ -140,6 +143,7 @@ export type AddBookMutationResponseResolvers<ContextType = any, ParentType exten
 
 export type BookResolvers<ContextType = any, ParentType extends ResolversParentTypes['Book'] = ResolversParentTypes['Book']> = {
   author?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

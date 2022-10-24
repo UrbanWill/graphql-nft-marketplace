@@ -15,8 +15,10 @@
   "dependencies": {
     "@apollo/server": "^4.0.2",
     "apollo-server-core": "^3.10.3",
+    "firebase-admin": "^11.2.0",
     "graphql": "^16.6.0",
-    "pino": "^8.7.0"
+    "pino": "^8.7.0",
+    "typesaurus": "7"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "2.13.7",

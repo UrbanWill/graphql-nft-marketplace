@@ -11,6 +11,7 @@ const {
 
 const config: Config = {
   name: "nft-marketplace-api",
+  projectId: "nft-marketplace-515a7",
   logLevel: (LOG_LEVEL as LogLevel) || "trace",
   port: PORT || 4000,
   environment: (ENVIRONMENT as Environment) ?? "dev",
@@ -19,6 +20,7 @@ const config: Config = {
   apiJwtSecret: API_JWT_SECRET || "jwtsecret",
   nftMarketCollection: "nft-market",
   nftMarketCollectionSubCollectionX: "nft-market-sub-collection-x",
+  booksCollection: "books",
 };
 
 export default config;
