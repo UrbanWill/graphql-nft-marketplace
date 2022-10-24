@@ -10,6 +10,11 @@ export type LogLevel = "debug" | "info" | "warn" | "error" | "trace";
 export interface Config {
   name: string;
   projectId: string;
+  firebasePrivateKey: string;
+  firebaseClientEmail: string;
+  firebaseClientId: string;
+  firebaseProjectKeyId: string;
+  firebaseClientX509CertUrl: string;
   logLevel: LogLevel;
   port: string | number;
   environment: Environment;
