@@ -12,7 +12,7 @@ const queries: QueryResolvers = {
   },
   nonceToSign: async (
     _parent: unknown,
-    { walletAddress }: { walletAddress: string },
+    { walletAddress },
     { dataSources: { nftMarketplaceAPI } }: AppContext
   ) => {
     const nonce = await nftMarketplaceAPI.getNonceToSign(walletAddress);

@@ -32,12 +32,19 @@ export type Book = {
 export type Mutation = {
   __typename?: 'Mutation';
   addBook?: Maybe<AddBookMutationResponse>;
+  loginWithWallet: Token;
 };
 
 
 export type MutationAddBookArgs = {
   author?: InputMaybe<Scalars['String']>;
   title?: InputMaybe<Scalars['String']>;
+};
+
+
+export type MutationLoginWithWalletArgs = {
+  signature: Scalars['String'];
+  walletAddress: Scalars['String'];
 };
 
 export type Nonce = {
@@ -54,6 +61,11 @@ export type Query = {
 
 export type QueryNonceToSignArgs = {
   walletAddress: Scalars['String'];
+};
+
+export type Token = {
+  __typename?: 'Token';
+  token: Scalars['String'];
 };
 
 
@@ -134,6 +146,7 @@ export type ResolversTypes = {
   Nonce: ResolverTypeWrapper<Nonce>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  Token: ResolverTypeWrapper<Token>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -147,6 +160,7 @@ export type ResolversParentTypes = {
   Nonce: Nonce;
   Query: {};
   String: Scalars['String'];
+  Token: Token;
 };
 
 export type AddBookMutationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AddBookMutationResponse'] = ResolversParentTypes['AddBookMutationResponse']> = {
@@ -166,6 +180,7 @@ export type BookResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addBook?: Resolver<Maybe<ResolversTypes['AddBookMutationResponse']>, ParentType, ContextType, Partial<MutationAddBookArgs>>;
+  loginWithWallet?: Resolver<ResolversTypes['Token'], ParentType, ContextType, RequireFields<MutationLoginWithWalletArgs, 'signature' | 'walletAddress'>>;
 };
 
 export type NonceResolvers<ContextType = any, ParentType extends ResolversParentTypes['Nonce'] = ResolversParentTypes['Nonce']> = {
@@ -178,11 +193,17 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   nonceToSign?: Resolver<ResolversTypes['Nonce'], ParentType, ContextType, RequireFields<QueryNonceToSignArgs, 'walletAddress'>>;
 };
 
+export type TokenResolvers<ContextType = any, ParentType extends ResolversParentTypes['Token'] = ResolversParentTypes['Token']> = {
+  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   AddBookMutationResponse?: AddBookMutationResponseResolvers<ContextType>;
   Book?: BookResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Nonce?: NonceResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Token?: TokenResolvers<ContextType>;
 };
 

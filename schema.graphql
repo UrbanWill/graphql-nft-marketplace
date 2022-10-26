@@ -8,6 +8,10 @@ type Nonce {
   nonce: Int!
 }
 
+type Token {
+  token: String!
+}
+
 type Query {
   books: [Book]
   nonceToSign(walletAddress: String!): Nonce!
@@ -22,4 +26,5 @@ type AddBookMutationResponse {
 
 type Mutation {
   addBook(title: String, author: String): AddBookMutationResponse
+  loginWithWallet(walletAddress: String!, signature: String!): Token!
 }

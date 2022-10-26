@@ -1,5 +1,11 @@
 import type { Logger as PinoLogger } from "pino";
-import { Book, AddBookMutationResponse, Nonce } from "../src/generated/graphql";
+import {
+  Book,
+  AddBookMutationResponse,
+  Nonce,
+  Token,
+  MutationLoginWithWalletArgs,
+} from "../src/generated/graphql";
 import type { DataSource as ApolloDataSource } from "apollo-datasource";
 import { Context } from "apollo-server-core";
 
@@ -35,6 +41,7 @@ export interface FirestoreDatasource extends ApolloDataSource<Context> {
   getBooks: () => Promise<Book[]>;
   getNonceToSign: (walletAddress: string) => Promise<Nonce>;
   addBook: (Book) => Promise<AddBookMutationResponse>;
+  loginWithWallet: (MutationLoginWithWalletArgs) => Promise<Token>;
 }
 export interface AppContext {
   dataSources: {
