@@ -43,8 +43,8 @@ export type MutationAddBookArgs = {
 
 
 export type MutationLoginWithWalletArgs = {
-  signature: Scalars['String'];
-  walletAddress: Scalars['String'];
+  message: Scalars['String'];
+  signedMessage: Scalars['String'];
 };
 
 export type Nonce = {
@@ -180,7 +180,7 @@ export type BookResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addBook?: Resolver<Maybe<ResolversTypes['AddBookMutationResponse']>, ParentType, ContextType, Partial<MutationAddBookArgs>>;
-  loginWithWallet?: Resolver<ResolversTypes['Token'], ParentType, ContextType, RequireFields<MutationLoginWithWalletArgs, 'signature' | 'walletAddress'>>;
+  loginWithWallet?: Resolver<ResolversTypes['Token'], ParentType, ContextType, RequireFields<MutationLoginWithWalletArgs, 'message' | 'signedMessage'>>;
 };
 
 export type NonceResolvers<ContextType = any, ParentType extends ResolversParentTypes['Nonce'] = ResolversParentTypes['Nonce']> = {

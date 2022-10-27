@@ -14,12 +14,12 @@ const mutations: MutationResolvers = {
   },
   loginWithWallet: async (
     _parent: unknown,
-    { walletAddress, signature },
+    { message, signedMessage },
     { dataSources: { nftMarketplaceAPI } }: AppContext
   ) => {
     return await nftMarketplaceAPI.loginWithWallet({
-      walletAddress,
-      signature,
+      message,
+      signedMessage,
     });
   },
 };

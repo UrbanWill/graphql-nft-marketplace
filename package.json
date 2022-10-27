@@ -16,6 +16,7 @@
     "@apollo/server": "^4.0.2",
     "apollo-server-core": "^3.10.3",
     "dotenv": "^16.0.3",
+    "ethers": "^5.7.2",
     "firebase-admin": "^11.2.0",
     "graphql": "^16.6.0",
     "pino": "^8.7.0",
