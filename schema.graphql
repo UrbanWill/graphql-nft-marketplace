@@ -26,5 +26,9 @@ type AddBookMutationResponse {
 
 type Mutation {
   addBook(title: String, author: String): AddBookMutationResponse
-  loginWithWallet(message: String!, signedMessage: String!): Token!
+  loginWithWallet(
+    walletAddress: String!
+    message: String!
+    signedMessage: String!
+  ): Token!
 }

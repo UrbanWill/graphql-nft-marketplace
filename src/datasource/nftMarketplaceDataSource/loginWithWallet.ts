@@ -8,23 +8,34 @@ import {
 } from "../../generated/graphql";
 import config from "../../../config";
 import { ethers } from "ethers";
+import { createLogger } from "../../logger/createLogger";
+
+const logger = createLogger();
 
 const loginWithWallet = async ({
+  walletAddress,
   message,
   signedMessage,
 }: MutationLoginWithWalletArgs): Promise<Token> => {
   // const noncesEntries = collection<Nonce>(config.noncesCollection);
 
-  // const signerAddress = ethers.utils.verifyMessage(message, signedMessage);
+  const msgHash = ethers.utils.hashMessage(message);
+  const msgHashBytes = ethers.utils.arrayify(msgHash);
 
-  // const addressFromMessage = message
-  //   .replace(/\n|\r/g, "")
-  //   .split("Wallet address:")
-  //   .pop()
-  //   .split("Nonce:")[0]
-  //   .trim();
+  const recoveredAddress = ethers.utils.recoverAddress(
+    msgHashBytes,
+    signedMessage
+  );
 
-  // const nonce = message.split("Nonce:").pop().trim();
+  const isSignatureValid = recoveredAddress === walletAddress;
+
+  if (!isSignatureValid) {
+    throw new GraphQLError("Invalid signature", {
+      extensions: { code: "INVALID_SIGNATURE" },
+    });
+  }
+
+  logger.warn({ isSignatureValid });
 
   try {
     // const res = await get(noncesEntries, walletAddress);
