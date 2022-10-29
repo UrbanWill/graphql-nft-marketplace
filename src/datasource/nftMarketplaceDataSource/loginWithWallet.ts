@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
 import admin from "firebase-admin";
-import { collection, get } from "typesaurus";
+import { collection, update, get } from "typesaurus";
 import {
   Token,
   Nonce,
@@ -17,11 +17,23 @@ const loginWithWallet = async ({
   message,
   signedMessage,
 }: MutationLoginWithWalletArgs): Promise<Token> => {
-  // const noncesEntries = collection<Nonce>(config.noncesCollection);
+  const noncesEntries = collection<Nonce>(config.noncesCollection);
 
-  const msgHash = ethers.utils.hashMessage(message);
+  const {
+    data: { nonce },
+  } = await get(noncesEntries, walletAddress);
+
+  /** checks if the sign in attempt is a replay attack */
+  if (message !== String(nonce)) {
+    logger.warn(`Wallet address: ${walletAddress} invalid nonce`);
+    throw new GraphQLError(`Wallet address: ${walletAddress} invalid nonce`, {
+      extensions: { code: "INVALID_NONCE" },
+    });
+  }
+
+  /** recovers signature from signed message */
+  const msgHash = ethers.utils.hashMessage(String(nonce));
   const msgHashBytes = ethers.utils.arrayify(msgHash);
-
   const recoveredAddress = ethers.utils.recoverAddress(
     msgHashBytes,
     signedMessage
@@ -30,44 +42,36 @@ const loginWithWallet = async ({
   const isSignatureValid = recoveredAddress === walletAddress;
 
   if (!isSignatureValid) {
-    throw new GraphQLError("Invalid signature", {
-      extensions: { code: "INVALID_SIGNATURE" },
-    });
+    logger.warn(`Wallet address: ${walletAddress} invalid signature`);
+    throw new GraphQLError(
+      `Wallet address: ${walletAddress} Invalid signature`,
+      {
+        extensions: { code: "INVALID_SIGNATURE" },
+      }
+    );
   }
 
-  logger.warn({ isSignatureValid });
-
   try {
-    // const res = await get(noncesEntries, walletAddress);
-
-    // if (!res) {
-    //   // The user document does not exist, create it first
-    //   const generatedNonce = Math.floor(Math.random() * 1000000);
-
-    //   // Create an Auth user
-    //   const createdUser = await admin.auth().createUser({
-    //     uid: walletAddress,
-    //   });
-
-    //   // Associate the nonce with that user
-    //   await admin
-    //     .firestore()
-    //     .collection(config.noncesCollection)
-    //     .doc(createdUser.uid)
-    //     .set({
-    //       nonce: generatedNonce,
-    //     });
-
-    //   return { nonce: generatedNonce };
-    // } else {
-    //   // The nonce document exists already, return the nonce
-    //   return res.data;
-    // }
-    return { token: "123" };
-  } catch {
-    throw new GraphQLError(` invalid signature`, {
-      extensions: { code: "UNAUTHORIZED" },
+    /** Updates nonce to prevent replay attacks */
+    const generatedNonce = Math.floor(Math.random() * 1000000);
+    await update(collection<Nonce>(config.noncesCollection), recoveredAddress, {
+      nonce: generatedNonce,
     });
+
+    const firebaseToken = await admin
+      .auth()
+      .createCustomToken(recoveredAddress);
+    return { token: firebaseToken };
+  } catch (error) {
+    logger.warn(
+      `Wallet address: ${walletAddress} failed to generate token. Error: ${error}`
+    );
+    throw new GraphQLError(
+      `Wallet address: ${walletAddress} failed to generate token, Error: ${error}`,
+      {
+        extensions: { code: "INTERNAL_SERVER_ERROR" },
+      }
+    );
   }
 };
 
