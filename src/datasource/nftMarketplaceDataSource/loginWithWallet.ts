@@ -34,10 +34,23 @@ const loginWithWallet = async ({
   /** recovers signature from signed message */
   const msgHash = ethers.utils.hashMessage(String(nonce));
   const msgHashBytes = ethers.utils.arrayify(msgHash);
-  const recoveredAddress = ethers.utils.recoverAddress(
-    msgHashBytes,
-    signedMessage
-  );
+
+  let recoveredAddress = "";
+
+  try {
+    recoveredAddress = await ethers.utils.recoverAddress(
+      msgHashBytes,
+      signedMessage
+    );
+  } catch (error) {
+    logger.warn(`Wallet address: ${walletAddress} Invalid signed message`);
+    throw new GraphQLError(
+      `Wallet address: ${walletAddress} Invalid signed message`,
+      {
+        extensions: { code: "INVALID_MESSAGE" },
+      }
+    );
+  }
 
   const isSignatureValid = recoveredAddress === walletAddress;
 
