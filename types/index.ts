@@ -21,6 +21,7 @@ export interface Config {
   firebaseClientId: string;
   firebaseProjectKeyId: string;
   firebaseClientX509CertUrl: string;
+  firebaseApiKey: string;
   logLevel: LogLevel;
   port: string | number;
   environment: Environment;

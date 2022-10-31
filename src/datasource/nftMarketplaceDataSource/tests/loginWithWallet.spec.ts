@@ -6,6 +6,11 @@ import {
 } from "../../../__mocks__/mockDataSource";
 import loginWithWallet from "../loginWithWallet";
 import config from "../../../../config";
+import * as AuthService from "../../../services/AuthService";
+
+const mockedToken = "1234";
+
+jest.spyOn(AuthService, "getUserToken").mockResolvedValue(mockedToken);
 
 describe("loginWithWallet", () => {
   afterEach(() => {
@@ -32,7 +37,7 @@ describe("loginWithWallet", () => {
     expect(mockCollection).toHaveBeenCalledWith(config.noncesCollection);
     expect(mockGet).toHaveBeenCalledTimes(1);
     expect(mockDoc).toHaveBeenCalledWith(mockedWalletAddress);
-    expect(token).not.toBeNull();
+    expect(token).toBe(mockedToken);
   });
 
   it("should throw invalid nonce when the message nonce does NOT match the nonce in the db", async () => {

@@ -9,6 +9,7 @@ import {
 import config from "../../../config";
 import { ethers } from "ethers";
 import { createLogger } from "../../logger/createLogger";
+import { getUserToken } from "../../services/AuthService";
 
 const logger = createLogger();
 
@@ -74,7 +75,10 @@ const loginWithWallet = async ({
     const firebaseToken = await admin
       .auth()
       .createCustomToken(recoveredAddress);
-    return { token: firebaseToken };
+
+    const idToken = await getUserToken({ customToken: firebaseToken });
+
+    return { token: idToken };
   } catch (error) {
     logger.warn(
       `Wallet address: ${walletAddress} failed to generate token. Error: ${error}`
