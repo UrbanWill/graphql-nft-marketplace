@@ -6,6 +6,7 @@ import resolvers from "./resolvers";
 import { createApolloLoggerPlugin } from "./logger/createApolloLoggerPlugin";
 import { readFileSync } from "fs";
 import { AppContext } from "../types";
+import { verifyFirebaseIdToken } from "./auth/verifyFirebaseToken/verifyFirebaseIdToken";
 
 import { createLogger } from "./logger/createLogger";
 import config from "../config";
@@ -19,15 +20,22 @@ const server = new ApolloServer<AppContext>({
   resolvers,
 });
 
-// TODO: Fix the types for the standalone server
+// TODO: Fix plugin types for the standalone server
 // @ts-ignore
 const { url } = await startStandaloneServer(server, {
-  context: async () => {
+  context: async ({ req }) => {
+    const token = req.headers.authorization || "";
+    const authToken = token.match(/Bearer (.*)/)?.[1];
     return {
       dataSources: {
         nftMarketplaceAPI: datasource,
       },
       logger: logger,
+      user: {
+        id: authToken
+          ? await verifyFirebaseIdToken({ idToken: authToken })
+          : null,
+      },
     };
   },
   plugins: [createApolloLoggerPlugin(logger, config)],

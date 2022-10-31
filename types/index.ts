@@ -21,7 +21,7 @@ export interface Config {
   firebaseClientId: string;
   firebaseProjectKeyId: string;
   firebaseClientX509CertUrl: string;
-  firebaseApiKey: string;
+  firebaseAuthUrl: string;
   logLevel: LogLevel;
   port: string | number;
   environment: Environment;
@@ -49,4 +49,7 @@ export interface AppContext {
     nftMarketplaceAPI: FirestoreDatasource;
   };
   logger: Logger;
+  user: {
+    id: string;
+  };
 }

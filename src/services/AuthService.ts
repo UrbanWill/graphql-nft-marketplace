@@ -9,7 +9,11 @@ const authClient = axios.create({
   timeout: 1000,
 });
 
-export function getUserToken({ customToken }: { customToken: string }) {
+export function getUserToken({
+  customToken,
+}: {
+  customToken: string;
+}): Promise<string> {
   return authClient
     .post("", { token: customToken, returnSecureToken: true })
     .then((response) => response.data.idToken)
