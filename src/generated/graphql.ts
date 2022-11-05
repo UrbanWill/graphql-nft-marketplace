@@ -64,9 +64,23 @@ export type QueryNonceToSignArgs = {
   walletAddress: Scalars['String'];
 };
 
+export enum Role {
+  Admin = 'ADMIN',
+  Master = 'MASTER',
+  User = 'USER'
+}
+
 export type Token = {
   __typename?: 'Token';
   token: Scalars['String'];
+};
+
+export type User = {
+  __typename?: 'User';
+  email?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  profilePicture?: Maybe<Scalars['String']>;
+  role: Role;
 };
 
 
@@ -146,8 +160,10 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   Nonce: ResolverTypeWrapper<Nonce>;
   Query: ResolverTypeWrapper<{}>;
+  Role: Role;
   String: ResolverTypeWrapper<Scalars['String']>;
   Token: ResolverTypeWrapper<Token>;
+  User: ResolverTypeWrapper<User>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -162,6 +178,7 @@ export type ResolversParentTypes = {
   Query: {};
   String: Scalars['String'];
   Token: Token;
+  User: User;
 };
 
 export type AddBookMutationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AddBookMutationResponse'] = ResolversParentTypes['AddBookMutationResponse']> = {
@@ -199,6 +216,14 @@ export type TokenResolvers<ContextType = any, ParentType extends ResolversParent
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+  email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  profilePicture?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  role?: Resolver<ResolversTypes['Role'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   AddBookMutationResponse?: AddBookMutationResponseResolvers<ContextType>;
   Book?: BookResolvers<ContextType>;
@@ -206,5 +231,6 @@ export type Resolvers<ContextType = any> = {
   Nonce?: NonceResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Token?: TokenResolvers<ContextType>;
+  User?: UserResolvers<ContextType>;
 };
 

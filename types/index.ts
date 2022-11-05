@@ -32,6 +32,7 @@ export interface Config {
   nftMarketCollectionSubCollectionX: string;
   booksCollection: string;
   noncesCollection: string;
+  usersCollection: string;
 }
 
 export interface Logger extends PinoLogger {

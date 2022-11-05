@@ -1,10 +1,12 @@
 import { GraphQLError } from "graphql";
 import admin from "firebase-admin";
-import { collection, update, get } from "typesaurus";
+import { collection, update, get, set } from "typesaurus";
 import {
   Token,
   Nonce,
+  User,
   MutationLoginWithWalletArgs,
+  Role,
 } from "../../generated/graphql";
 import config from "../../../config";
 import { ethers } from "ethers";
@@ -13,12 +15,15 @@ import { getUserToken } from "../../services/AuthService";
 
 const logger = createLogger();
 
+type UserWithToken = User & Token;
+
 const loginWithWallet = async ({
   walletAddress,
   message,
   signedMessage,
-}: MutationLoginWithWalletArgs): Promise<Token> => {
+}: MutationLoginWithWalletArgs): Promise<UserWithToken> => {
   const noncesEntries = collection<Nonce>(config.noncesCollection);
+  const usersEntries = collection<User>(config.usersCollection);
 
   const {
     data: { nonce },
@@ -72,13 +77,30 @@ const loginWithWallet = async ({
       nonce: generatedNonce,
     });
 
+    const userRes = await get(usersEntries, walletAddress);
+
+    let user: User;
+
+    if (!userRes) {
+      logger.info(`${walletAddress} user does not exist, creating user`);
+      const newUser: User = {
+        id: walletAddress,
+        role: Role.User,
+      };
+
+      await set(usersEntries, walletAddress, newUser);
+      user = { ...newUser };
+    } else {
+      user = { ...userRes.data };
+    }
+
     const firebaseToken = await admin
       .auth()
-      .createCustomToken(recoveredAddress);
+      .createCustomToken(recoveredAddress, { role: user.role });
 
     const idToken = await getUserToken({ customToken: firebaseToken });
 
-    return { token: idToken };
+    return { ...(user as UserWithToken), token: idToken };
   } catch (error) {
     logger.warn(
       `Wallet address: ${walletAddress} failed to generate token. Error: ${error}`

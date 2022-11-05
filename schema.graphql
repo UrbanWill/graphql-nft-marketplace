@@ -32,3 +32,16 @@ type Mutation {
     signedMessage: String!
   ): Token!
 }
+
+enum Role {
+  MASTER
+  ADMIN
+  USER
+}
+
+type User {
+  id: ID!
+  email: String
+  role: Role!
+  profilePicture: String
+}

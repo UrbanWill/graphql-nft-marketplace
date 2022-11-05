@@ -31,11 +31,9 @@ const { url } = await startStandaloneServer(server, {
         nftMarketplaceAPI: datasource,
       },
       logger: logger,
-      user: {
-        id: authToken
-          ? await verifyFirebaseIdToken({ idToken: authToken })
-          : null,
-      },
+      user: !authToken
+        ? null
+        : { ...(await verifyFirebaseIdToken({ idToken: authToken })) },
     };
   },
   plugins: [createApolloLoggerPlugin(logger, config)],

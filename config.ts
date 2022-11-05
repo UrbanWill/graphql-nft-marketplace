@@ -34,6 +34,7 @@ const config: Config = {
   nftMarketCollectionSubCollectionX: "nft-market-sub-collection-x",
   booksCollection: "books",
   noncesCollection: "nonces",
+  usersCollection: "users",
 };
 
 export default config;
