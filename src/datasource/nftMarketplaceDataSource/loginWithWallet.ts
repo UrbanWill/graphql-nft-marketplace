@@ -91,7 +91,7 @@ const loginWithWallet = async ({
       await set(usersEntries, walletAddress, newUser);
       user = { ...newUser };
     } else {
-      user = { ...userRes.data };
+      user = { ...userRes.data, id: userRes.ref.id };
     }
 
     const firebaseToken = await admin
@@ -103,10 +103,10 @@ const loginWithWallet = async ({
     return { ...(user as UserWithToken), token: idToken };
   } catch (error) {
     logger.warn(
-      `Wallet address: ${walletAddress} failed to generate token. Error: ${error}`
+      `Wallet address: ${walletAddress} failed to generate token. ${error}`
     );
     throw new GraphQLError(
-      `Wallet address: ${walletAddress} failed to generate token, Error: ${error}`,
+      `Wallet address: ${walletAddress} failed to generate token, ${error}`,
       {
         extensions: { code: "INTERNAL_SERVER_ERROR" },
       }

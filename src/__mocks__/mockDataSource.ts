@@ -15,7 +15,13 @@ const credential = admin.credential.cert(
   path.resolve(__dirname, "./mock.key.json")
 );
 
-const mockFirestoreDb = async ({ mockedNonces }: { mockedNonces: any[] }) => {
+const mockFirestoreDb = async ({
+  mockedNonces = [],
+  mockedUsers = [],
+}: {
+  mockedNonces?: any[];
+  mockedUsers?: any[];
+}) => {
   admin.initializeApp({
     credential,
     projectId: config.projectId,
@@ -24,6 +30,7 @@ const mockFirestoreDb = async ({ mockedNonces }: { mockedNonces: any[] }) => {
   return mockGoogleCloudFirestore({
     database: {
       [config.noncesCollection]: [...mockedNonces],
+      [config.usersCollection]: [...mockedUsers],
     },
   });
 };
