@@ -2,9 +2,10 @@ import { GraphQLError } from "graphql";
 import admin from "firebase-admin";
 import { collection, update, get, set } from "typesaurus";
 import {
-  Token,
+  UserWithToken,
   Nonce,
   User,
+  Token,
   MutationLoginWithWalletArgs,
   Role,
 } from "../../generated/graphql";
@@ -14,8 +15,6 @@ import { createLogger } from "../../logger/createLogger";
 import { getUserToken } from "../../services/AuthService";
 
 const logger = createLogger();
-
-type UserWithToken = User & Token;
 
 const loginWithWallet = async ({
   walletAddress,
@@ -79,11 +78,11 @@ const loginWithWallet = async ({
 
     const userRes = await get(usersEntries, walletAddress);
 
-    let user: User;
+    let user;
 
     if (!userRes) {
       logger.info(`${walletAddress} user does not exist, creating user`);
-      const newUser: User = {
+      const newUser = {
         id: walletAddress,
         role: Role.User,
       };
@@ -100,7 +99,7 @@ const loginWithWallet = async ({
 
     const idToken = await getUserToken({ customToken: firebaseToken });
 
-    return { ...(user as UserWithToken), token: idToken };
+    return { user, token: idToken };
   } catch (error) {
     logger.warn(
       `Wallet address: ${walletAddress} failed to generate token. ${error}`

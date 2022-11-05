@@ -5,6 +5,7 @@ import {
   Nonce,
   Token,
   MutationLoginWithWalletArgs,
+  UserWithToken,
 } from "../src/generated/graphql";
 import type { DataSource as ApolloDataSource } from "apollo-datasource";
 import { Context } from "apollo-server-core";
@@ -43,7 +44,7 @@ export interface FirestoreDatasource extends ApolloDataSource<Context> {
   getBooks: () => Promise<Book[]>;
   getNonceToSign: (walletAddress: string) => Promise<Nonce>;
   addBook: (Book) => Promise<AddBookMutationResponse>;
-  loginWithWallet: (MutationLoginWithWalletArgs) => Promise<Token>;
+  loginWithWallet: (MutationLoginWithWalletArgs) => Promise<UserWithToken>;
 }
 export interface AppContext {
   dataSources: {

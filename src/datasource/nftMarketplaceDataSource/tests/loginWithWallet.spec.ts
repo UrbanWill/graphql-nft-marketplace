@@ -59,8 +59,7 @@ describe("loginWithWallet", () => {
     });
     expect(mockDoc).toHaveBeenCalledWith(mockedWalletAddress);
     expect(response).toEqual({
-      id: mockedWalletAddress,
-      role: Role.User,
+      user: { id: mockedWalletAddress, role: Role.User },
       token: mockedToken,
     });
   });
@@ -82,8 +81,7 @@ describe("loginWithWallet", () => {
     expect(mockSet).toHaveBeenCalledTimes(0);
     expect(mockDoc).toHaveBeenCalledWith(mockedExistingUserWalletAddress);
     expect(response).toEqual({
-      id: mockedExistingUserWalletAddress,
-      role: Role.Master,
+      user: { id: mockedExistingUserWalletAddress, role: Role.Master },
       token: mockedToken,
     });
   });

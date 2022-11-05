@@ -12,6 +12,24 @@ type Token {
   token: String!
 }
 
+enum Role {
+  MASTER
+  ADMIN
+  USER
+}
+
+type User {
+  id: ID!
+  email: String
+  role: Role!
+  profilePicture: String
+}
+
+type UserWithToken {
+  user: User!
+  token: String!
+}
+
 type Query {
   books: [Book]
   nonceToSign(walletAddress: String!): Nonce!
@@ -30,18 +48,5 @@ type Mutation {
     walletAddress: String!
     message: String!
     signedMessage: String!
-  ): Token!
-}
-
-enum Role {
-  MASTER
-  ADMIN
-  USER
-}
-
-type User {
-  id: ID!
-  email: String
-  role: Role!
-  profilePicture: String
+  ): UserWithToken!
 }
