@@ -3,10 +3,12 @@ import {
   mockCollection,
   mockGet,
   mockDoc,
+  mockSet,
 } from "../../../__mocks__/mockDataSource";
 import loginWithWallet from "../loginWithWallet";
 import config from "../../../../config";
 import * as AuthService from "../../../services/AuthService";
+import { Role } from "../../../generated/graphql";
 
 const mockedToken = "1234";
 
@@ -26,18 +28,28 @@ describe("loginWithWallet", () => {
 
   mockFirestoreDb({ mockedNonces: mockedNonceEntry });
 
-  it("should return a token", async () => {
+  it("should create a new user, return a token and user", async () => {
     const mockedValidSignedMessage =
       "0x9e81c23915fa05ea74bc134290c8a6cf3d3d33272c6b36954ea6ab01d65764d1680dcf343ef0d6065b2f8bba1edd06a85277cd045d4671f2f7c764444e6f1e501b"; // this signature is valid for the nonce 12345678 and the wallet address 0xa7B623fD5d7e54DC0bA89eb70529574DAa25B202
-    const { token } = await loginWithWallet({
+    const response = await loginWithWallet({
       walletAddress: mockedWalletAddress,
       message: String(mockedNonce.nonce),
       signedMessage: mockedValidSignedMessage,
     });
     expect(mockCollection).toHaveBeenCalledWith(config.noncesCollection);
-    expect(mockGet).toHaveBeenCalledTimes(1);
+    expect(mockCollection).toHaveBeenCalledWith(config.usersCollection);
+    expect(mockGet).toHaveBeenCalledTimes(2);
+    expect(mockSet).toHaveBeenCalledTimes(1);
+    expect(mockSet).toHaveBeenCalledWith({
+      id: mockedWalletAddress,
+      role: Role.User,
+    });
     expect(mockDoc).toHaveBeenCalledWith(mockedWalletAddress);
-    expect(token).toBe(mockedToken);
+    expect(response).toEqual({
+      id: mockedWalletAddress,
+      role: Role.User,
+      token: mockedToken,
+    });
   });
 
   it("should throw invalid nonce when the message nonce does NOT match the nonce in the db", async () => {
