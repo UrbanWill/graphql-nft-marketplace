@@ -7,7 +7,7 @@ const logger = createLogger();
 export const verifyFirebaseIdToken = async ({
   idToken,
 }: {
-  idToken: string | undefined;
+  idToken: string;
 }): Promise<User> => {
   try {
     const { uid, role } = await admin.auth().verifyIdToken(idToken);

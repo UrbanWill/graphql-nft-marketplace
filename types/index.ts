@@ -43,8 +43,12 @@ export interface Logger extends PinoLogger {
 export interface FirestoreDatasource extends ApolloDataSource<Context> {
   getBooks: () => Promise<Book[]>;
   getNonceToSign: (walletAddress: string) => Promise<Nonce>;
-  addBook: (Book) => Promise<AddBookMutationResponse>;
-  loginWithWallet: (MutationLoginWithWalletArgs) => Promise<UserWithToken>;
+  addBook: (Book: Book) => Promise<AddBookMutationResponse>;
+  loginWithWallet: ({
+    walletAddress,
+    message,
+    signedMessage,
+  }: MutationLoginWithWalletArgs) => Promise<UserWithToken>;
 }
 export interface AppContext {
   dataSources: {

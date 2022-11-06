@@ -25,6 +25,7 @@ const loginWithWallet = async ({
   const usersEntries = collection<User>(config.usersCollection);
 
   const {
+    //@ts-ignore
     data: { nonce },
   } = await get(noncesEntries, walletAddress);
 

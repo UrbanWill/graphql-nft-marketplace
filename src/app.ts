@@ -20,23 +20,27 @@ const server = new ApolloServer<AppContext>({
   resolvers,
 });
 
-// TODO: Fix plugin types for the standalone server
-// @ts-ignore
-const { url } = await startStandaloneServer(server, {
-  context: async ({ req }) => {
-    const token = req.headers.authorization || "";
-    const authToken = token.match(/Bearer (.*)/)?.[1];
-    return {
-      dataSources: {
-        nftMarketplaceAPI: datasource,
-      },
-      logger: logger,
-      user: !authToken
-        ? null
-        : { ...(await verifyFirebaseIdToken({ idToken: authToken })) },
-    };
-  },
-  plugins: [createApolloLoggerPlugin(logger, config)],
-});
+const startApolloServer = async () => {
+  // TODO: Fix plugin types for the standalone server
+  // @ts-ignore
+  const { url } = await startStandaloneServer(server, {
+    context: async ({ req }) => {
+      const token = req.headers.authorization || "";
+      const authToken = token.match(/Bearer (.*)/)?.[1];
+      return {
+        dataSources: {
+          nftMarketplaceAPI: datasource,
+        },
+        logger: logger,
+        user: !authToken
+          ? null
+          : { ...(await verifyFirebaseIdToken({ idToken: authToken })) },
+      };
+    },
+    plugins: [createApolloLoggerPlugin(logger, config)],
+  });
 
-console.log(`🚀  Server ready at: ${url}`);
+  console.log(`🚀  Server ready at: ${url}`);
+};
+
+startApolloServer();
