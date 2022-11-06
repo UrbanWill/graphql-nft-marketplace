@@ -37,6 +37,7 @@ const startApolloServer = async () => {
           : { ...(await verifyFirebaseIdToken({ idToken: authToken })) },
       };
     },
+    listen: { port: process.env.PORT || 4000 },
     plugins: [createApolloLoggerPlugin(logger, config)],
   });
 
