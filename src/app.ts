@@ -18,6 +18,7 @@ const datasource = createDataSource(config, logger);
 const server = new ApolloServer<AppContext>({
   typeDefs,
   resolvers,
+  introspection: true,
 });
 
 const startApolloServer = async () => {
