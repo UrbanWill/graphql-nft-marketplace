@@ -8,7 +8,7 @@
     "yarn": "1.x"
   },
   "scripts": {
-    "compile": "tsc --project tsconfig.build.json",
+    "build": "rimraf ./lib && tsc --project tsconfig.build.json",
     "dev": "nodemon | pino-pretty",
     "start": "node ./lib/src/app.js",
     "codegen": "graphql-codegen --config codegen.ts",
@@ -26,6 +26,7 @@
     "firebase-admin": "^11.2.0",
     "graphql": "^16.6.0",
     "pino": "^8.7.0",
+    "rimraf": "^3.0.2",
     "typesaurus": "7"
   },
   "devDependencies": {
