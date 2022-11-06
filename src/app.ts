@@ -18,6 +18,7 @@ const datasource = createDataSource(config, logger);
 const server = new ApolloServer<AppContext>({
   typeDefs,
   resolvers,
+  introspection: true,
 });
 
 const startApolloServer = async () => {
@@ -37,6 +38,7 @@ const startApolloServer = async () => {
           : { ...(await verifyFirebaseIdToken({ idToken: authToken })) },
       };
     },
+    listen: { port: process.env.PORT || 4000 },
     plugins: [createApolloLoggerPlugin(logger, config)],
   });
 
