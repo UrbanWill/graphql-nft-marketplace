@@ -10,7 +10,7 @@
   "scripts": {
     "compile": "tsc --project tsconfig.build.json",
     "dev": "nodemon | pino-pretty",
-    "start": "npm run compile && node ./lib/src/app.js",
+    "start": "node ./lib/src/app.js",
     "codegen": "graphql-codegen --config codegen.ts",
     "test": "jest"
   },
