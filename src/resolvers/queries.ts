@@ -11,7 +11,7 @@ const queries: QueryResolvers = {
     { dataSources: { nftMarketplaceAPI }, user }: AppContext
   ) => {
     logger.info({ user });
-    const books = await nftMarketplaceAPI.getBooks();
+    const books = await nftMarketplaceAPI.getBooks({ user });
     return books;
   },
   nonceToSign: async (

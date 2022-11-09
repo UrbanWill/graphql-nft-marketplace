@@ -1,6 +1,7 @@
 import admin from "firebase-admin";
 import { createLogger } from "../../logger/createLogger";
-import { User } from "../../generated/graphql";
+import { Role } from "../../generated/graphql";
+import { IDecodedUserToken } from "../../../types";
 
 const logger = createLogger();
 
@@ -8,7 +9,7 @@ export const verifyFirebaseIdToken = async ({
   idToken,
 }: {
   idToken: string;
-}): Promise<User> => {
+}): Promise<IDecodedUserToken> => {
   try {
     const { uid, role } = await admin.auth().verifyIdToken(idToken);
 

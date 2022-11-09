@@ -3,7 +3,7 @@ import {
   Book,
   AddBookMutationResponse,
   Nonce,
-  Token,
+  Role,
   MutationLoginWithWalletArgs,
   UserWithToken,
 } from "../src/generated/graphql";
@@ -40,10 +40,18 @@ export interface Logger extends PinoLogger {
   logMemoryUsage: () => void;
 }
 
+export interface IDecodedUserToken {
+  id: string;
+  role?: Role;
+}
+
+interface IGetBooks {
+  user: IDecodedUserToken;
+}
 export interface FirestoreDatasource extends ApolloDataSource<Context> {
-  getBooks: () => Promise<Book[]>;
+  getBooks: (getBooksArgs: IGetBooks) => Promise<Book[]>;
   getNonceToSign: (walletAddress: string) => Promise<Nonce>;
-  addBook: (Book: Book) => Promise<AddBookMutationResponse>;
+  addBook: (book: Book) => Promise<AddBookMutationResponse>;
   loginWithWallet: ({
     walletAddress,
     message,
@@ -55,7 +63,5 @@ export interface AppContext {
     nftMarketplaceAPI: FirestoreDatasource;
   };
   logger: Logger;
-  user: {
-    id: string;
-  };
+  user: IDecodedUserToken;
 }
