@@ -3,9 +3,9 @@ import {
   mockCollection,
   mockGet,
   mockDoc,
-} from "../../../__mocks__/mockDataSource";
-import getNonceToSign from "../getNonceToSign";
-import config from "../../../../config";
+} from "../__mocks__/mockDataSource";
+import getNonceToSign from "../../datasource/nftMarketplaceDataSource/getNonceToSign";
+import config from "../../../config";
 
 describe("getNonceToSign", () => {
   afterEach(() => {

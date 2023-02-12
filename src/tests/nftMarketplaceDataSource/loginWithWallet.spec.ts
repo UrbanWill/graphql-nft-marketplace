@@ -4,11 +4,11 @@ import {
   mockGet,
   mockDoc,
   mockSet,
-} from "../../../__mocks__/mockDataSource";
-import loginWithWallet from "../loginWithWallet";
-import config from "../../../../config";
-import * as AuthService from "../../../services/AuthService";
-import { Role } from "../../../generated/graphql";
+} from "../__mocks__/mockDataSource";
+import loginWithWallet from "../../datasource/nftMarketplaceDataSource/loginWithWallet";
+import config from "../../../config";
+import * as AuthService from "../../services/AuthService";
+import { Role } from "../../generated/graphql";
 
 const mockedToken = "1234";
 

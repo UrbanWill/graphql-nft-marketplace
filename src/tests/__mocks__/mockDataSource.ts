@@ -8,7 +8,7 @@ import {
   mockAdd,
 } from "firestore-jest-mock/mocks/firestore";
 import admin from "firebase-admin";
-import config from "../../config";
+import config from "../../../config";
 import path from "path";
 
 const credential = admin.credential.cert(
