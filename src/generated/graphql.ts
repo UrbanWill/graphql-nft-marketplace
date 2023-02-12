@@ -25,9 +25,9 @@ export type AddBookMutationResponse = {
 
 export type Book = {
   __typename?: 'Book';
-  author?: Maybe<Scalars['String']>;
+  author: Scalars['String'];
   id?: Maybe<Scalars['ID']>;
-  title?: Maybe<Scalars['String']>;
+  title: Scalars['String'];
 };
 
 export type Mutation = {
@@ -38,8 +38,8 @@ export type Mutation = {
 
 
 export type MutationAddBookArgs = {
-  author?: InputMaybe<Scalars['String']>;
-  title?: InputMaybe<Scalars['String']>;
+  author: Scalars['String'];
+  title: Scalars['String'];
 };
 
 
@@ -200,14 +200,14 @@ export type AddBookMutationResponseResolvers<ContextType = AppContext, ParentTyp
 }>;
 
 export type BookResolvers<ContextType = AppContext, ParentType extends ResolversParentTypes['Book'] = ResolversParentTypes['Book']> = ResolversObject<{
-  author?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  author?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
-  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type MutationResolvers<ContextType = AppContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  addBook?: Resolver<Maybe<ResolversTypes['AddBookMutationResponse']>, ParentType, ContextType, Partial<MutationAddBookArgs>>;
+  addBook?: Resolver<Maybe<ResolversTypes['AddBookMutationResponse']>, ParentType, ContextType, RequireFields<MutationAddBookArgs, 'author' | 'title'>>;
   loginWithWallet?: Resolver<ResolversTypes['UserWithToken'], ParentType, ContextType, RequireFields<MutationLoginWithWalletArgs, 'message' | 'signedMessage' | 'walletAddress'>>;
 }>;
 
