@@ -1,4 +1,5 @@
 import type { Logger as PinoLogger } from "pino";
+import { Role } from "../src/generated/graphql";
 import {
   Book,
   AddBookMutationResponse,
@@ -56,6 +57,7 @@ export interface AppContext {
   };
   logger: Logger;
   user: {
-    id: string;
+    id: string | null;
+    role: Role;
   };
 }

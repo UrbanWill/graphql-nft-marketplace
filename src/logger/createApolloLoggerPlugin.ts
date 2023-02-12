@@ -1,19 +1,28 @@
 import { Config, Logger } from "../../types";
+import { AppContext } from "../../types";
 
-import type { GraphQLRequestContext } from "apollo-server-core";
+import { GraphQLRequestContext } from "@apollo/server";
 
 export const createApolloLoggerPlugin = (logger: Logger, config: Config) => {
   return {
     async serverWillStart() {
       logger.info(`🚀 Server ready at port ${config.port}`);
     },
-    async requestDidStart(requestContext: GraphQLRequestContext) {
+    async requestDidStart(requestContext: GraphQLRequestContext<AppContext>) {
       const {
-        request: { operationName, variables },
+        request: { operationName, variables, query },
       } = requestContext;
+
+      // Skip logging introspection queries
+      if (operationName === "IntrospectionQuery") {
+        return;
+      }
+
+      // Extract operation type and name from query if operationName? is not set
+      const operation = query?.match(/\b(\w+)\b\s(\w+)\b/)?.[0];
       logger.trace(
         {
-          operationName: operationName,
+          operationName: operationName ?? operation,
           variables: variables ?? false,
         },
         "Request start"
@@ -23,7 +32,7 @@ export const createApolloLoggerPlugin = (logger: Logger, config: Config) => {
         willSendResponse: async ({
           errors,
           response,
-        }: GraphQLRequestContext) => {
+        }: GraphQLRequestContext<AppContext>) => {
           if (!errors) {
             logger.trace(response, "Request end");
           }
