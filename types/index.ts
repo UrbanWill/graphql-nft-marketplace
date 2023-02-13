@@ -2,7 +2,7 @@ import { NftMarketplaceDataSource } from "../src/datasource/createDataSource";
 import type { Logger as PinoLogger } from "pino";
 import { Role } from "../src/generated/graphql";
 
-export type Environment = "dev" | "prod";
+export type Environment = "test" | "dev" | "prod";
 
 export type LogLevel = "debug" | "info" | "warn" | "error" | "trace";
 
@@ -18,6 +18,7 @@ export interface Config {
   logLevel: LogLevel;
   port: string | number;
   environment: Environment;
+  nodeEnv: Environment;
   version: string;
   firestoreBatchSize: number;
   apiJwtSecret: string;
