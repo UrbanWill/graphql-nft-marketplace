@@ -1,10 +1,6 @@
 import config from "../config";
 import admin from "firebase-admin";
-
-import path from "path";
-const mockFirebaseCredential = admin.credential.cert(
-  path.resolve(__dirname, "./mockFirestore.key.json")
-);
+import { mockFirebaseCredential } from "./tests/__mocks__/mockFirestore";
 
 const firebaseConfig = {
   type: "service_account",
@@ -19,9 +15,8 @@ const firebaseConfig = {
   clientX509CertUrl: config.firebaseClientX509CertUrl,
 };
 
-const credential =
-  config.nodeEnv === "test"
-    ? mockFirebaseCredential
-    : admin.credential.cert(firebaseConfig);
+const credential = admin.credential.cert(
+  config.nodeEnv === "test" ? mockFirebaseCredential : firebaseConfig
+);
 
 export default credential;
