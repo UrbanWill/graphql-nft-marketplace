@@ -3,7 +3,7 @@ import admin from "firebase-admin";
 
 import path from "path";
 const mockFirebaseCredential = admin.credential.cert(
-  path.resolve(__dirname, "./tests/__mocks__/mock.key.json")
+  path.resolve(__dirname, "./mockFirestore.key.json")
 );
 
 const firebaseConfig = {

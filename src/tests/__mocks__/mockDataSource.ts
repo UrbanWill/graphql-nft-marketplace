@@ -12,7 +12,7 @@ import config from "../../../config";
 import path from "path";
 
 const credential = admin.credential.cert(
-  path.resolve(__dirname, "./mock.key.json")
+  path.resolve(__dirname, "../../mockFirestore.key.json")
 );
 
 const mockFirestoreDb = async ({
