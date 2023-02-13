@@ -14,11 +14,13 @@ const getNonceToSign = async (walletAddress: string): Promise<Nonce> => {
     return existingNonce.data;
   }
   try {
-    // If the user document does not exist, create it first
+    /** Having a set on a query is an anti-pattern. This should be refactored into:
+     * - Signup with wallet, where the mutation creates the user document and nonce
+     * - Get nonce to sign, where it just gets the nonce
+     */
     const generatedNonce = generateNonce();
 
     await createUserClosure({ admin, walletAddress });
-
     await set(noncesEntries, walletAddress, { nonce: generatedNonce });
   } catch (error) {
     throw new GraphQLError("Error creating nonce for signing", {
