@@ -1,13 +1,6 @@
 import { NftMarketplaceDataSource } from "../src/datasource/createDataSource";
 import type { Logger as PinoLogger } from "pino";
 import { Role } from "../src/generated/graphql";
-import {
-  Nonce,
-  MutationLoginWithWalletArgs,
-  UserWithToken,
-} from "../src/generated/graphql";
-import type { DataSource as ApolloDataSource } from "apollo-datasource";
-import { Context } from "apollo-server-core";
 
 export type Environment = "dev" | "prod";
 
