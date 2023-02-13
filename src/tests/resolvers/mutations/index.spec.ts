@@ -24,17 +24,17 @@ beforeAll(async () => {
   });
 });
 
-describe("getNonceToSign", () => {
+describe("loginWithWallet", () => {
   const mockWalletAddress = "0x123";
-  const GET_NONCE =
-    "query NonceToSign($walletAddress: String!) { nonceToSign(walletAddress: $walletAddress) { nonce } }";
+  const LOG_IN_WITH_WALLET =
+    "mutation LoginWithWallet($walletAddress: String!, $message: String!, $signedMessage: String!) { loginWithWallet(walletAddress: $walletAddress, message: $message, signedMessage: $signedMessage) { token, user { id, email, role, profilePicture, } } }";
 
   it("Should throw", async () => {
-    const ERROR_MESSAGE = "Error creating nonce";
-    dataSource.getNonceToSign = jest.fn().mockResolvedValueOnce(
+    const ERROR_MESSAGE = "Invalid wallet address";
+    dataSource.loginWithWallet = jest.fn().mockResolvedValueOnce(
       new GraphQLError(ERROR_MESSAGE, {
         extensions: {
-          code: "ERROR_CREATING_NONCE",
+          code: "INVALID_WALLET_ADDRESS",
           mockWalletAddress,
         },
       })
@@ -42,8 +42,12 @@ describe("getNonceToSign", () => {
 
     const { body } = await testServer.executeOperation(
       {
-        query: GET_NONCE,
-        variables: { walletAddress: mockWalletAddress },
+        query: LOG_IN_WITH_WALLET,
+        variables: {
+          walletAddress: mockWalletAddress,
+          message: "123",
+          signedMessage: "dEaD",
+        },
       },
       {
         contextValue: {
@@ -62,14 +66,26 @@ describe("getNonceToSign", () => {
     expect(message).toEqual(ERROR_MESSAGE);
   });
 
-  it("should get nonce", async () => {
-    const expectedResponse = { nonce: 1234 };
-    dataSource.getNonceToSign = jest.fn(async () => expectedResponse);
+  it("should return token and user", async () => {
+    const expectedResponse = {
+      token: "firebase_token_1234",
+      user: {
+        id: mockWalletAddress,
+        email: "demo@gmail.com",
+        role: Role.User,
+        profilePicture: "https://example.com",
+      },
+    };
+    dataSource.loginWithWallet = jest.fn(async () => expectedResponse);
 
     const { body } = await testServer.executeOperation(
       {
-        query: GET_NONCE,
-        variables: { walletAddress: mockWalletAddress },
+        query: LOG_IN_WITH_WALLET,
+        variables: {
+          walletAddress: mockWalletAddress,
+          message: "123",
+          signedMessage: "dEaD",
+        },
       },
       {
         contextValue: {
@@ -86,6 +102,6 @@ describe("getNonceToSign", () => {
     expect(body.singleResult.errors).toBeUndefined();
     assert(body.kind === "single");
     expect(body.singleResult.errors).toBeUndefined();
-    expect(body.singleResult.data?.nonceToSign).toEqual(expectedResponse);
+    expect(body.singleResult.data?.loginWithWallet).toEqual(expectedResponse);
   });
 });
