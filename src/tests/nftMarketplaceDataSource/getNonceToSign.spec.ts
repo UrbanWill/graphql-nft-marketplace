@@ -3,9 +3,17 @@ import {
   mockCollection,
   mockGet,
   mockDoc,
+  mockSet,
 } from "../__mocks__/mockDataSource";
 import getNonceToSign from "../../datasource/nftMarketplaceDataSource/getNonceToSign";
 import config from "../../../config";
+
+const mockGenerateNonce = 99999;
+
+jest.mock("../../utils", () => ({
+  createUserClosure: jest.fn().mockResolvedValue(null),
+  generateNonce: () => mockGenerateNonce,
+}));
 
 describe("getNonceToSign", () => {
   afterEach(() => {
@@ -28,14 +36,17 @@ describe("getNonceToSign", () => {
     expect(res).toEqual(mockedNonce);
   });
 
-  // it("should create and return new nonce if doc does not exist", async () => {
-  //   const mockedNewWalletAddress = "0x123";
+  it("should create a new nonce if doc does not exist", async () => {
+    const mockedNewWalletAddress = "0x123";
 
-  //   const res = await getNonceToSign(mockedNewWalletAddress);
+    await getNonceToSign(mockedNewWalletAddress);
 
-  //   expect(mockCollection).toHaveBeenCalledWith(config.noncesCollection);
-  //   expect(mockGet).toHaveBeenCalledTimes(1);
-  //   expect(mockDoc).toHaveBeenCalledWith(mockedWalletAddress);
-  //   expect(res).toEqual(mockedNonce);
-  // });
+    expect(mockCollection).toHaveBeenCalledWith(config.noncesCollection);
+    expect(mockGet).toHaveBeenCalledTimes(2);
+    expect(mockDoc).toHaveBeenCalledWith(mockedNewWalletAddress);
+    expect(mockSet).toHaveBeenCalledTimes(1);
+    expect(mockSet).toHaveBeenCalledWith({
+      nonce: mockGenerateNonce,
+    });
+  });
 });
