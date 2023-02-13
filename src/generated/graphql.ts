@@ -27,8 +27,10 @@ export type MutationLoginWithWalletArgs = {
   walletAddress: Scalars['String'];
 };
 
+/** Unique number used for cryptographic operations. */
 export type Nonce = {
   __typename?: 'Nonce';
+  /** Unique number assigned to a wallet address to be signed. */
   nonce: Scalars['Int'];
 };
 
@@ -42,28 +44,38 @@ export type QueryNonceToSignArgs = {
   walletAddress: Scalars['String'];
 };
 
+/** Role represents the different roles a user can have within the system */
 export enum Role {
   Admin = 'ADMIN',
   Master = 'MASTER',
   User = 'USER'
 }
 
+/** Token used for authentication */
 export type Token = {
   __typename?: 'Token';
   token: Scalars['String'];
 };
 
+/** User defines several fields to represent a user in the system */
 export type User = {
   __typename?: 'User';
+  /** Email of the user */
   email?: Maybe<Scalars['String']>;
+  /** ID of the user */
   id: Scalars['ID'];
+  /** Profile picture URL */
   profilePicture?: Maybe<Scalars['String']>;
+  /** Role of the user */
   role: Role;
 };
 
+/** UserWithToken is a combination of a user and a token */
 export type UserWithToken = {
   __typename?: 'UserWithToken';
+  /** User token used for authentication */
   token: Scalars['String'];
+  /** User type */
   user: User;
 };
 
