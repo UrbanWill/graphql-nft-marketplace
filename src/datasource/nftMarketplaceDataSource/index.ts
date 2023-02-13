@@ -1,4 +1,4 @@
-export { default as getBooks } from "./getBooks";
-export { default as addBook } from "./addBook";
-export { default as getNonceToSign } from "./getNonceToSign";
-export { default as loginWithWallet } from "./loginWithWallet";
+import getNonceToSign from "./getNonceToSign";
+import loginWithWallet from "./loginWithWallet";
+
+export { getNonceToSign, loginWithWallet };

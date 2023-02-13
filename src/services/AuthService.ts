@@ -6,7 +6,7 @@ const logger = createLogger();
 
 const authClient = axios.create({
   baseURL: config.firebaseAuthUrl,
-  timeout: 1000,
+  timeout: 5000,
 });
 
 export function getUserToken({

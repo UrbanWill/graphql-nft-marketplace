@@ -1,41 +1,40 @@
 import { GraphQLError } from "graphql";
-import { ApolloServerErrorCode } from "@apollo/server/errors";
 import admin from "firebase-admin";
 import { collection, get, set } from "typesaurus";
 import { Nonce } from "../../generated/graphql";
 import config from "../../../config";
-import { createLogger } from "../../logger/createLogger";
-
-const logger = createLogger();
+import { createUserClosure, generateNonce } from "../../utils";
 
 const getNonceToSign = async (walletAddress: string): Promise<Nonce> => {
   const noncesEntries = collection<Nonce>(config.noncesCollection);
 
+  const existingNonce = await get(noncesEntries, walletAddress);
+
+  if (existingNonce) {
+    return existingNonce.data;
+  }
   try {
-    const res = await get(noncesEntries, walletAddress);
+    /** Having a set on a query is an anti-pattern. This should be refactored into:
+     * - Signup with wallet, where the mutation creates the user document and nonce
+     * - Get nonce to sign, where it just gets the nonce
+     */
+    const generatedNonce = generateNonce();
 
-    if (!res) {
-      // The user document does not exist, create it first
-      const generatedNonce = Math.floor(Math.random() * 1000000);
-
-      // Create an Auth user
-      await admin.auth().createUser({
-        uid: walletAddress,
-      });
-
-      await set(noncesEntries, walletAddress, { nonce: generatedNonce });
-
-      return { nonce: generatedNonce };
-    } else {
-      // The nonce document exists already, return the nonce
-      return res.data;
-    }
+    await createUserClosure({ admin, walletAddress });
+    await set(noncesEntries, walletAddress, { nonce: generatedNonce });
   } catch (error) {
-    logger.error({ error });
-    throw new GraphQLError(`${walletAddress} error getting nonce to sign`, {
-      extensions: { code: ApolloServerErrorCode.INTERNAL_SERVER_ERROR },
+    throw new GraphQLError("Error creating nonce for signing", {
+      extensions: {
+        code: "ERROR_CREATING_NONCE",
+        walletAddress,
+        error,
+      },
     });
   }
+
+  const newNonce = await get(noncesEntries, walletAddress);
+
+  return newNonce?.data as Nonce;
 };
 
 export default getNonceToSign;

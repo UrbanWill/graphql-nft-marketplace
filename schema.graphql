@@ -1,49 +1,69 @@
-type Book {
-  title: String
-  author: String
-  id: ID
-}
-
+"""
+Unique number used for cryptographic operations.
+"""
 type Nonce {
+  """
+  Unique number assigned to a wallet address to be signed.
+  """
   nonce: Int!
 }
-
+"""
+Token used for authentication
+"""
 type Token {
   token: String!
 }
 
+"""
+Role represents the different roles a user can have within the system
+"""
 enum Role {
   MASTER
   ADMIN
   USER
 }
 
+"""
+User defines several fields to represent a user in the system
+"""
 type User {
+  """
+  ID of the user
+  """
   id: ID!
+  """
+  Email of the user
+  """
   email: String
+  """
+  Role of the user
+  """
   role: Role!
+  """
+  Profile picture URL
+  """
   profilePicture: String
 }
 
+"""
+UserWithToken is a combination of a user and a token
+"""
 type UserWithToken {
+  """
+  User type
+  """
   user: User!
+  """
+  User token used for authentication
+  """
   token: String!
 }
 
 type Query {
-  books: [Book]
   nonceToSign(walletAddress: String!): Nonce!
 }
 
-type AddBookMutationResponse {
-  code: String!
-  success: Boolean!
-  message: String!
-  book: Book
-}
-
 type Mutation {
-  addBook(title: String, author: String): AddBookMutationResponse
   loginWithWallet(
     walletAddress: String!
     message: String!

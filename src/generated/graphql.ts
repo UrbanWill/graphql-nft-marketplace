@@ -1,4 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql';
+import { AppContext } from '../../types/index';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -14,31 +15,9 @@ export type Scalars = {
   Float: number;
 };
 
-export type AddBookMutationResponse = {
-  __typename?: 'AddBookMutationResponse';
-  book?: Maybe<Book>;
-  code: Scalars['String'];
-  message: Scalars['String'];
-  success: Scalars['Boolean'];
-};
-
-export type Book = {
-  __typename?: 'Book';
-  author?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['ID']>;
-  title?: Maybe<Scalars['String']>;
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
-  addBook?: Maybe<AddBookMutationResponse>;
   loginWithWallet: UserWithToken;
-};
-
-
-export type MutationAddBookArgs = {
-  author?: InputMaybe<Scalars['String']>;
-  title?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -48,14 +27,15 @@ export type MutationLoginWithWalletArgs = {
   walletAddress: Scalars['String'];
 };
 
+/** Unique number used for cryptographic operations. */
 export type Nonce = {
   __typename?: 'Nonce';
+  /** Unique number assigned to a wallet address to be signed. */
   nonce: Scalars['Int'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  books?: Maybe<Array<Maybe<Book>>>;
   nonceToSign: Nonce;
 };
 
@@ -64,32 +44,43 @@ export type QueryNonceToSignArgs = {
   walletAddress: Scalars['String'];
 };
 
+/** Role represents the different roles a user can have within the system */
 export enum Role {
   Admin = 'ADMIN',
   Master = 'MASTER',
   User = 'USER'
 }
 
+/** Token used for authentication */
 export type Token = {
   __typename?: 'Token';
   token: Scalars['String'];
 };
 
+/** User defines several fields to represent a user in the system */
 export type User = {
   __typename?: 'User';
+  /** Email of the user */
   email?: Maybe<Scalars['String']>;
+  /** ID of the user */
   id: Scalars['ID'];
+  /** Profile picture URL */
   profilePicture?: Maybe<Scalars['String']>;
+  /** Role of the user */
   role: Role;
 };
 
+/** UserWithToken is a combination of a user and a token */
 export type UserWithToken = {
   __typename?: 'UserWithToken';
+  /** User token used for authentication */
   token: Scalars['String'];
+  /** User type */
   user: User;
 };
 
-
+export type WithIndex<TObject> = TObject & Record<string, any>;
+export type ResolversObject<TObject> = WithIndex<TObject>;
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
@@ -157,9 +148,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 ) => TResult | Promise<TResult>;
 
 /** Mapping between all available schema types and the resolvers types */
-export type ResolversTypes = {
-  AddBookMutationResponse: ResolverTypeWrapper<AddBookMutationResponse>;
-  Book: ResolverTypeWrapper<Book>;
+export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
@@ -171,12 +160,10 @@ export type ResolversTypes = {
   Token: ResolverTypeWrapper<Token>;
   User: ResolverTypeWrapper<User>;
   UserWithToken: ResolverTypeWrapper<UserWithToken>;
-};
+}>;
 
 /** Mapping between all available schema types and the resolvers parents */
-export type ResolversParentTypes = {
-  AddBookMutationResponse: AddBookMutationResponse;
-  Book: Book;
+export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean'];
   ID: Scalars['ID'];
   Int: Scalars['Int'];
@@ -187,65 +174,46 @@ export type ResolversParentTypes = {
   Token: Token;
   User: User;
   UserWithToken: UserWithToken;
-};
+}>;
 
-export type AddBookMutationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AddBookMutationResponse'] = ResolversParentTypes['AddBookMutationResponse']> = {
-  book?: Resolver<Maybe<ResolversTypes['Book']>, ParentType, ContextType>;
-  code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type BookResolvers<ContextType = any, ParentType extends ResolversParentTypes['Book'] = ResolversParentTypes['Book']> = {
-  author?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
-  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  addBook?: Resolver<Maybe<ResolversTypes['AddBookMutationResponse']>, ParentType, ContextType, Partial<MutationAddBookArgs>>;
+export type MutationResolvers<ContextType = AppContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   loginWithWallet?: Resolver<ResolversTypes['UserWithToken'], ParentType, ContextType, RequireFields<MutationLoginWithWalletArgs, 'message' | 'signedMessage' | 'walletAddress'>>;
-};
+}>;
 
-export type NonceResolvers<ContextType = any, ParentType extends ResolversParentTypes['Nonce'] = ResolversParentTypes['Nonce']> = {
+export type NonceResolvers<ContextType = AppContext, ParentType extends ResolversParentTypes['Nonce'] = ResolversParentTypes['Nonce']> = ResolversObject<{
   nonce?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
+}>;
 
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  books?: Resolver<Maybe<Array<Maybe<ResolversTypes['Book']>>>, ParentType, ContextType>;
+export type QueryResolvers<ContextType = AppContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   nonceToSign?: Resolver<ResolversTypes['Nonce'], ParentType, ContextType, RequireFields<QueryNonceToSignArgs, 'walletAddress'>>;
-};
+}>;
 
-export type TokenResolvers<ContextType = any, ParentType extends ResolversParentTypes['Token'] = ResolversParentTypes['Token']> = {
+export type TokenResolvers<ContextType = AppContext, ParentType extends ResolversParentTypes['Token'] = ResolversParentTypes['Token']> = ResolversObject<{
   token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
+}>;
 
-export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+export type UserResolvers<ContextType = AppContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   profilePicture?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   role?: Resolver<ResolversTypes['Role'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
+}>;
 
-export type UserWithTokenResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserWithToken'] = ResolversParentTypes['UserWithToken']> = {
+export type UserWithTokenResolvers<ContextType = AppContext, ParentType extends ResolversParentTypes['UserWithToken'] = ResolversParentTypes['UserWithToken']> = ResolversObject<{
   token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
+}>;
 
-export type Resolvers<ContextType = any> = {
-  AddBookMutationResponse?: AddBookMutationResponseResolvers<ContextType>;
-  Book?: BookResolvers<ContextType>;
+export type Resolvers<ContextType = AppContext> = ResolversObject<{
   Mutation?: MutationResolvers<ContextType>;
   Nonce?: NonceResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Token?: TokenResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   UserWithToken?: UserWithTokenResolvers<ContextType>;
-};
+}>;
 

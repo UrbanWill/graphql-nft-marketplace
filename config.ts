@@ -13,6 +13,7 @@ const {
   FIREBASE_CLIENT_ID,
   FIREBASE_CLIENT_X_URL,
   FIREBASE_API_KEY,
+  NODE_ENV,
 } = process.env;
 
 const config: Config = {
@@ -27,6 +28,7 @@ const config: Config = {
   logLevel: (LOG_LEVEL as LogLevel) || "trace",
   port: PORT || 4000,
   environment: (ENVIRONMENT as Environment) ?? "dev",
+  nodeEnv: (NODE_ENV as Environment) ?? "dev",
   version: `${BUILD_VERSION || "unknown"}-${COMMIT_SHA || "unknown"}`,
   firestoreBatchSize: 499,
   apiJwtSecret: API_JWT_SECRET || "jwtsecret",

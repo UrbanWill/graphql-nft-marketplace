@@ -1,16 +1,8 @@
+import { NftMarketplaceDataSource } from "../src/datasource/createDataSource";
 import type { Logger as PinoLogger } from "pino";
-import {
-  Book,
-  AddBookMutationResponse,
-  Nonce,
-  Token,
-  MutationLoginWithWalletArgs,
-  UserWithToken,
-} from "../src/generated/graphql";
-import type { DataSource as ApolloDataSource } from "apollo-datasource";
-import { Context } from "apollo-server-core";
+import { Role } from "../src/generated/graphql";
 
-export type Environment = "dev" | "prod";
+export type Environment = "test" | "dev" | "prod";
 
 export type LogLevel = "debug" | "info" | "warn" | "error" | "trace";
 
@@ -26,6 +18,7 @@ export interface Config {
   logLevel: LogLevel;
   port: string | number;
   environment: Environment;
+  nodeEnv: Environment;
   version: string;
   firestoreBatchSize: number;
   apiJwtSecret: string;
@@ -39,23 +32,13 @@ export interface Config {
 export interface Logger extends PinoLogger {
   logMemoryUsage: () => void;
 }
-
-export interface FirestoreDatasource extends ApolloDataSource<Context> {
-  getBooks: () => Promise<Book[]>;
-  getNonceToSign: (walletAddress: string) => Promise<Nonce>;
-  addBook: (Book: Book) => Promise<AddBookMutationResponse>;
-  loginWithWallet: ({
-    walletAddress,
-    message,
-    signedMessage,
-  }: MutationLoginWithWalletArgs) => Promise<UserWithToken>;
-}
 export interface AppContext {
   dataSources: {
-    nftMarketplaceAPI: FirestoreDatasource;
+    nftMarketplaceAPI: NftMarketplaceDataSource;
   };
   logger: Logger;
   user: {
-    id: string;
+    id: string | null;
+    role: Role;
   };
 }

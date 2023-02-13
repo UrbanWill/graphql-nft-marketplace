@@ -4,11 +4,11 @@ import {
   mockGet,
   mockDoc,
   mockSet,
-} from "../../../__mocks__/mockDataSource";
-import loginWithWallet from "../loginWithWallet";
-import config from "../../../../config";
-import * as AuthService from "../../../services/AuthService";
-import { Role } from "../../../generated/graphql";
+} from "../__mocks__/mockDataSource";
+import loginWithWallet from "../../datasource/nftMarketplaceDataSource/loginWithWallet";
+import config from "../../../config";
+import * as AuthService from "../../services/AuthService";
+import { Role } from "../../generated/graphql";
 
 const mockedToken = "1234";
 
@@ -86,6 +86,17 @@ describe("loginWithWallet", () => {
     });
   });
 
+  it("should throw an error if the wallet address is not in the nonces collection", async () => {
+    const mockedInvalidWalletAddress = "0xD34d";
+    await expect(
+      loginWithWallet({
+        walletAddress: mockedInvalidWalletAddress,
+        message: String(mockedNonce.nonce),
+        signedMessage: "1234",
+      })
+    ).rejects.toThrow("Invalid wallet address");
+  });
+
   it("should throw invalid nonce when the message nonce does NOT match the nonce in the db", async () => {
     const mockedAlreadyUsedNonce = { nonce: 87654321 };
     await expect(
@@ -94,22 +105,35 @@ describe("loginWithWallet", () => {
         message: String(mockedAlreadyUsedNonce),
         signedMessage: "1234",
       })
-    ).rejects.toThrow(`Wallet address: ${mockedWalletAddress} invalid nonce`);
+    ).rejects.toThrow("Invalid nonce");
     expect(mockCollection).toHaveBeenCalledWith(config.noncesCollection);
     expect(mockGet).toHaveBeenCalledTimes(1);
     expect(mockDoc).toHaveBeenCalledWith(mockedWalletAddress);
   });
 
-  it("should throw invalid signature", async () => {
+  it("should throw invalid signed message", async () => {
     await expect(
       loginWithWallet({
         walletAddress: mockedWalletAddress,
         message: String(mockedNonce.nonce),
         signedMessage: "1234",
       })
-    ).rejects.toThrow(
-      `Wallet address: ${mockedWalletAddress} Invalid signed message`
-    );
+    ).rejects.toThrow("Invalid signed message");
+    expect(mockCollection).toHaveBeenCalledWith(config.noncesCollection);
+    expect(mockGet).toHaveBeenCalledTimes(1);
+    expect(mockDoc).toHaveBeenCalledWith(mockedWalletAddress);
+  });
+  //
+  it("should throw invalid signature when the recovered wallet address does not match the nonce for the wallet that is supposed to sign that nonce", async () => {
+    const validSignatureWrongWallet =
+      "0xc44cd9793651c9f007a2f943740bedcf7715cfaea5507ef2392998324014bddd28c651d5a560ab89c7b0e61a834a7fc16dcb3db23c7dfb0496c8c32bc550998d1c";
+    await expect(
+      loginWithWallet({
+        walletAddress: mockedWalletAddress,
+        message: String(mockedNonce.nonce),
+        signedMessage: validSignatureWrongWallet,
+      })
+    ).rejects.toThrow("Invalid signature");
     expect(mockCollection).toHaveBeenCalledWith(config.noncesCollection);
     expect(mockGet).toHaveBeenCalledTimes(1);
     expect(mockDoc).toHaveBeenCalledWith(mockedWalletAddress);
