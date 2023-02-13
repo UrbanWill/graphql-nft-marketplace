@@ -28,7 +28,7 @@ const config: Config = {
   logLevel: (LOG_LEVEL as LogLevel) || "trace",
   port: PORT || 4000,
   environment: (ENVIRONMENT as Environment) ?? "dev",
-  nodeEnv: NODE_ENV as Environment,
+  nodeEnv: (NODE_ENV as Environment) ?? "dev",
   version: `${BUILD_VERSION || "unknown"}-${COMMIT_SHA || "unknown"}`,
   firestoreBatchSize: 499,
   apiJwtSecret: API_JWT_SECRET || "jwtsecret",
