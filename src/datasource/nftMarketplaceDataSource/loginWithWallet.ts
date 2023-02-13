@@ -5,16 +5,12 @@ import {
   UserWithToken,
   Nonce,
   User,
-  Token,
   MutationLoginWithWalletArgs,
   Role,
 } from "../../generated/graphql";
 import config from "../../../config";
 import { ethers } from "ethers";
-import { createLogger } from "../../logger/createLogger";
 import { getUserToken } from "../../services/AuthService";
-
-const logger = createLogger();
 
 const loginWithWallet = async ({
   walletAddress,
@@ -24,16 +20,20 @@ const loginWithWallet = async ({
   const noncesEntries = collection<Nonce>(config.noncesCollection);
   const usersEntries = collection<User>(config.usersCollection);
 
-  const {
-    //@ts-ignore
-    data: { nonce },
-  } = await get(noncesEntries, walletAddress);
+  const res = await get(noncesEntries, walletAddress);
+
+  if (!res) {
+    throw new GraphQLError("Invalid wallet address", {
+      extensions: { code: "INVALID_WALLET_ADDRESS", walletAddress },
+    });
+  }
+
+  const { nonce } = res.data;
 
   /** checks if the sign in attempt is a replay attack */
   if (message !== String(nonce)) {
-    logger.warn(`Wallet address: ${walletAddress} invalid nonce`);
-    throw new GraphQLError(`Wallet address: ${walletAddress} invalid nonce`, {
-      extensions: { code: "INVALID_NONCE" },
+    throw new GraphQLError("Invalid nonce", {
+      extensions: { code: "INVALID_NONCE", walletAddress },
     });
   }
 
@@ -49,25 +49,17 @@ const loginWithWallet = async ({
       signedMessage
     );
   } catch (error) {
-    logger.warn(`Wallet address: ${walletAddress} Invalid signed message`);
-    throw new GraphQLError(
-      `Wallet address: ${walletAddress} Invalid signed message`,
-      {
-        extensions: { code: "INVALID_MESSAGE" },
-      }
-    );
+    throw new GraphQLError("Invalid signed message", {
+      extensions: { code: "INVALID_SIGNED_MESSAGE", walletAddress, error },
+    });
   }
 
   const isSignatureValid = recoveredAddress === walletAddress;
 
   if (!isSignatureValid) {
-    logger.warn(`Wallet address: ${walletAddress} invalid signature`);
-    throw new GraphQLError(
-      `Wallet address: ${walletAddress} Invalid signature`,
-      {
-        extensions: { code: "INVALID_SIGNATURE" },
-      }
-    );
+    throw new GraphQLError("Invalid signature", {
+      extensions: { code: "INVALID_SIGNATURE", walletAddress },
+    });
   }
 
   try {
@@ -82,7 +74,6 @@ const loginWithWallet = async ({
     let user;
 
     if (!userRes) {
-      logger.info(`${walletAddress} user does not exist, creating user`);
       const newUser = {
         id: walletAddress,
         role: Role.User,
@@ -102,15 +93,10 @@ const loginWithWallet = async ({
 
     return { user, token: idToken };
   } catch (error) {
-    logger.warn(
-      `Wallet address: ${walletAddress} failed to generate token. ${error}`
-    );
-    throw new GraphQLError(
-      `Wallet address: ${walletAddress} failed to generate token, ${error}`,
-      {
-        extensions: { code: "INTERNAL_SERVER_ERROR" },
-      }
-    );
+    console.log({ error });
+    throw new GraphQLError("Failed to generate token", {
+      extensions: { code: "INTERNAL_SERVER_ERROR", walletAddress, error },
+    });
   }
 };
 
