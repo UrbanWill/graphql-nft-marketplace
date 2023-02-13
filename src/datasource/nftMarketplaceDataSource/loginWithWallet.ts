@@ -93,7 +93,6 @@ const loginWithWallet = async ({
 
     return { user, token: idToken };
   } catch (error) {
-    console.log({ error });
     throw new GraphQLError("Failed to generate token", {
       extensions: { code: "INTERNAL_SERVER_ERROR", walletAddress, error },
     });
