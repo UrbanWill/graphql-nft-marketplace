@@ -1,13 +1,8 @@
 import admin from "firebase-admin";
-import {
-  getBooks,
-  addBook,
-  getNonceToSign,
-  loginWithWallet,
-} from "./nftMarketplaceDataSource";
+import { getNonceToSign, loginWithWallet } from "./nftMarketplaceDataSource";
 import { Config, Logger } from "../../types";
 
-export class createDataSource {
+export class NftMarketplaceDataSource {
   constructor({ logger, config }: { logger: Logger; config: Config }) {
     const firebaseConfig = {
       type: "service_account",
@@ -28,8 +23,6 @@ export class createDataSource {
       projectId: config.projectId,
     });
   }
-  getBooks = getBooks;
-  addBook = addBook;
   getNonceToSign = getNonceToSign;
   loginWithWallet = loginWithWallet;
 }

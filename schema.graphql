@@ -1,9 +1,3 @@
-type Book {
-  title: String!
-  author: String!
-  id: ID
-}
-
 type Nonce {
   nonce: Int!
 }
@@ -31,19 +25,10 @@ type UserWithToken {
 }
 
 type Query {
-  books: [Book]
   nonceToSign(walletAddress: String!): Nonce!
 }
 
-type AddBookMutationResponse {
-  code: String!
-  success: Boolean!
-  message: String!
-  book: Book
-}
-
 type Mutation {
-  addBook(title: String!, author: String!): AddBookMutationResponse
   loginWithWallet(
     walletAddress: String!
     message: String!

@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { createDataSource } from "./datasource/createDataSource";
+import { NftMarketplaceDataSource } from "./datasource/createDataSource";
 import resolvers from "./resolvers";
 import { createApolloLoggerPlugin } from "./logger/createApolloLoggerPlugin";
 import { readFileSync } from "fs";
@@ -15,7 +15,7 @@ import config from "../config";
 const typeDefs = readFileSync("./schema.graphql", { encoding: "utf-8" });
 const logger = createLogger();
 const apolloLoggerPlugin = createApolloLoggerPlugin(logger, config);
-const datasource = new createDataSource({ config, logger });
+const datasource = new NftMarketplaceDataSource({ config, logger });
 
 const server = new ApolloServer<AppContext>({
   typeDefs,

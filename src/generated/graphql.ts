@@ -15,31 +15,9 @@ export type Scalars = {
   Float: number;
 };
 
-export type AddBookMutationResponse = {
-  __typename?: 'AddBookMutationResponse';
-  book?: Maybe<Book>;
-  code: Scalars['String'];
-  message: Scalars['String'];
-  success: Scalars['Boolean'];
-};
-
-export type Book = {
-  __typename?: 'Book';
-  author: Scalars['String'];
-  id?: Maybe<Scalars['ID']>;
-  title: Scalars['String'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
-  addBook?: Maybe<AddBookMutationResponse>;
   loginWithWallet: UserWithToken;
-};
-
-
-export type MutationAddBookArgs = {
-  author: Scalars['String'];
-  title: Scalars['String'];
 };
 
 
@@ -56,7 +34,6 @@ export type Nonce = {
 
 export type Query = {
   __typename?: 'Query';
-  books?: Maybe<Array<Maybe<Book>>>;
   nonceToSign: Nonce;
 };
 
@@ -160,8 +137,6 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
-  AddBookMutationResponse: ResolverTypeWrapper<AddBookMutationResponse>;
-  Book: ResolverTypeWrapper<Book>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
@@ -177,8 +152,6 @@ export type ResolversTypes = ResolversObject<{
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
-  AddBookMutationResponse: AddBookMutationResponse;
-  Book: Book;
   Boolean: Scalars['Boolean'];
   ID: Scalars['ID'];
   Int: Scalars['Int'];
@@ -191,23 +164,7 @@ export type ResolversParentTypes = ResolversObject<{
   UserWithToken: UserWithToken;
 }>;
 
-export type AddBookMutationResponseResolvers<ContextType = AppContext, ParentType extends ResolversParentTypes['AddBookMutationResponse'] = ResolversParentTypes['AddBookMutationResponse']> = ResolversObject<{
-  book?: Resolver<Maybe<ResolversTypes['Book']>, ParentType, ContextType>;
-  code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type BookResolvers<ContextType = AppContext, ParentType extends ResolversParentTypes['Book'] = ResolversParentTypes['Book']> = ResolversObject<{
-  author?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
 export type MutationResolvers<ContextType = AppContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  addBook?: Resolver<Maybe<ResolversTypes['AddBookMutationResponse']>, ParentType, ContextType, RequireFields<MutationAddBookArgs, 'author' | 'title'>>;
   loginWithWallet?: Resolver<ResolversTypes['UserWithToken'], ParentType, ContextType, RequireFields<MutationLoginWithWalletArgs, 'message' | 'signedMessage' | 'walletAddress'>>;
 }>;
 
@@ -217,7 +174,6 @@ export type NonceResolvers<ContextType = AppContext, ParentType extends Resolver
 }>;
 
 export type QueryResolvers<ContextType = AppContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  books?: Resolver<Maybe<Array<Maybe<ResolversTypes['Book']>>>, ParentType, ContextType>;
   nonceToSign?: Resolver<ResolversTypes['Nonce'], ParentType, ContextType, RequireFields<QueryNonceToSignArgs, 'walletAddress'>>;
 }>;
 
@@ -241,8 +197,6 @@ export type UserWithTokenResolvers<ContextType = AppContext, ParentType extends 
 }>;
 
 export type Resolvers<ContextType = AppContext> = ResolversObject<{
-  AddBookMutationResponse?: AddBookMutationResponseResolvers<ContextType>;
-  Book?: BookResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Nonce?: NonceResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
